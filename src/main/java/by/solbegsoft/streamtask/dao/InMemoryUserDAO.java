@@ -1,13 +1,21 @@
 package by.solbegsoft.streamtask.dao;
 
 import by.solbegsoft.streamtask.entity.User;
+import lombok.Data;
 
 import java.util.Arrays;
 import java.util.List;
 
+@Data
 public class InMemoryUserDAO {
 
-    public static List<User> buildUsersCollection() {
+    List<User> users;
+
+    public InMemoryUserDAO() {
+        this.users = buildUsersCollection();
+    }
+
+    private static List<User> buildUsersCollection() {
         return Arrays.asList(
                 new User("Ivan", 14, Arrays.asList("idontliketorepeattwice@mail.ru", "idontliketorepeattwice@mail.ru", "msin@fds.com")),
                 new User("John", 18, Arrays.asList("lemon@john.com", "j@weak.io", "j@weak.io", "j@weak.io")),
@@ -18,5 +26,4 @@ public class InMemoryUserDAO {
                 new User("John", 22, Arrays.asList("reallycomplexmail444@hh.ru", "idontliketorepeattwice@mail.ru"))
         );
     }
-
 }
