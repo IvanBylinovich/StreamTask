@@ -17,7 +17,9 @@ class UsersPrinterUtilTest {
 
     private ByteArrayOutputStream output = new ByteArrayOutputStream();
     private InMemoryUserDAO userDAO = Mockito.mock(InMemoryUserDAO.class);
+
     private UsersPrinterUtil usersPrinterUtil;
+    private PrintStream standardOut = System.out;
 
     private List<User> testUsersList = Arrays.asList(
             new User("Ivan", 14, Arrays.asList("idontliketorepeattwice@mail.ru", "idontliketorepeattwice@mail.ru", "msin@fds.com")),
@@ -62,7 +64,7 @@ class UsersPrinterUtilTest {
 
     @AfterEach
     public void cleanUpStreams() {
-        System.setOut(null);
+        System.setOut(standardOut);
     }
 
     @Test

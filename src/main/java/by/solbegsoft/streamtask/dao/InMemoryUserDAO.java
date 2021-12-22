@@ -26,4 +26,5 @@ public class InMemoryUserDAO {
                 new User("John", 22, Arrays.asList("reallycomplexmail444@hh.ru", "idontliketorepeattwice@mail.ru"))
         );
     }
+
 }

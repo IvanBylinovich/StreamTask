@@ -68,7 +68,9 @@ public class UsersPrinterUtil {
             Optional<String> lineU = userList.stream().map(User::getName).filter(Objects::nonNull).distinct().reduce((x, y) -> x.concat(", " + y));
             if (lineU.isPresent()) {
                 System.out.println(lineU.get());
-            } else System.out.println("There are no registered users in the system");
+            } else{
+                System.out.println("There are no registered users in the system");
+            }
         }
     }
 
