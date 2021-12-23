@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -43,19 +44,22 @@ class UsersPrinterUtilTest {
             new User("Maria", 23, Arrays.asList("db@maria.ru", "xray@gmail.com", "xray@gmail.com", "xray@gmail.com"))
     );
 
+    private List<User> emptyList = new ArrayList<>();
+
     public UsersPrinterUtilTest() {
         Mockito.when(userDAO.getUsers()).thenReturn(testUsersList);
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
     }
 
-    String allName = "Ivan\r\nJohn\r\nMaria\r\nKate\r\nPhil\r\nKate\r\nJohn\r\n";
-    String errorMessage = "error message\r\n";
-    String adultUsers = "John\r\nMaria\r\nKate\r\nKate\r\nJohn\r\n";
-    String uniqueNames = "Ivan\r\nJohn\r\nMaria\r\nKate\r\nPhil\r\n";
-    String uniqueEmail = "idontliketorepeattwice@mail.ru\r\nmsin@fds.com\r\nlemon@john.com\r\nj@weak.io\r\n" +
-            "db@maria.ru\r\nxray@gmail.com\r\nhh@tut.ru\r\npasswordisthesameaslogin@gmail.com\r\n" +
-            "reallycomplexmail222@hh.ru\r\nreallycomplexmail333@hh.ru\r\nreallycomplexmail444@hh.ru\r\n";
-    String uniqueUsernameLine = "Ivan, John, Maria, Kate, Phil\r\n";
+    String allName = "Ivan John Maria Kate Phil Kate John";
+    String adultUsers = "John Maria Kate Kate John";
+    String uniqueNames = "Ivan John Maria Kate Phil";
+    String uniqueEmail = "idontliketorepeattwice@mail.ru msin@fds.com lemon@john.com j@weak.io db@maria.ru" +
+            " xray@gmail.com hh@tut.ru passwordisthesameaslogin@gmail.com reallycomplexmail222@hh.ru" +
+            " reallycomplexmail333@hh.ru reallycomplexmail444@hh.ru";
+    String uniqueUsernameLine = "Ivan, John, Maria, Kate, Phil";
+    String errorMessage = "error message";
+    String noRegisteredUsersMessage = "There are no registered users in the system";
 
     @BeforeEach
     public void setStreams() {
@@ -70,15 +74,25 @@ class UsersPrinterUtilTest {
     @Test
     void printAllName_correctWork_true() {
         usersPrinterUtil.printAllName();
-        Assertions.assertEquals(allName, output.toString());
+        Assertions.assertEquals(allName, output.toString().trim().replace("\r\n", " "));
+    }
+
+    @Test
+    void printAllName_emptyList_true() {
+        Mockito.when(userDAO.getUsers()).thenReturn(emptyList);
+        this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
+
+        usersPrinterUtil.printAllName();
+        Assertions.assertEquals(noRegisteredUsersMessage, output.toString().trim());
     }
 
     @Test
     void printAllName_blankedUsersInList_shouldPrintNonNullNames() {
         Mockito.when(userDAO.getUsers()).thenReturn(blankUserInList);
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
+
         usersPrinterUtil.printAllName();
-        Assertions.assertEquals("Maria\r\n", output.toString());
+        Assertions.assertEquals("Maria", output.toString().trim());
     }
 
     @Test
@@ -87,7 +101,7 @@ class UsersPrinterUtilTest {
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printAllName();
-        Assertions.assertEquals(errorMessage, output.toString());
+        Assertions.assertEquals(errorMessage, output.toString().trim());
     }
 
     @Test
@@ -96,46 +110,64 @@ class UsersPrinterUtilTest {
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printAllName();
-        Assertions.assertEquals(errorMessage, output.toString());
+        Assertions.assertEquals(errorMessage, output.toString().trim());
     }
 
     @Test
-    void printAllAdultUserName_correctWork_true() {
+    void printAllAdultUsername_correctWork_true() {
         usersPrinterUtil.printAllAdultUsername();
-        Assertions.assertEquals(adultUsers, output.toString());
+        Assertions.assertEquals(adultUsers, output.toString().trim().replace("\r\n", " "));
     }
 
     @Test
-    void printAllAdultUserName_blankedUsersInList_shouldPrintNonNullNames() {
+    void printAllAdultUsername_emptyList_true() {
+        Mockito.when(userDAO.getUsers()).thenReturn(emptyList);
+        this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
+
+        usersPrinterUtil.printAllAdultUsername();
+        Assertions.assertEquals(noRegisteredUsersMessage, output.toString().trim());
+    }
+
+    @Test
+    void printAllAdultUsername_blankedUsersInList_shouldPrintNonNullNames() {
         Mockito.when(userDAO.getUsers()).thenReturn(blankUserInList);
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printAllAdultUsername();
-        Assertions.assertEquals("Maria\r\n", output.toString());
+        Assertions.assertEquals("Maria", output.toString().trim());
     }
 
     @Test
-    void printAllAdultUserName_usersListIsNull_shouldPrintErrorMessage() {
+    void printAllAdultUsername_usersListIsNull_shouldPrintErrorMessage() {
         Mockito.when(userDAO.getUsers()).thenReturn(null);
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printAllAdultUsername();
-        Assertions.assertEquals(errorMessage, output.toString());
+        Assertions.assertEquals(errorMessage, output.toString().trim());
     }
 
     @Test
-    void printAllAdultUserName_nullInUsersList_shouldPrintErrorMessage() {
+    void printAllAdultUsername_nullInUsersList_shouldPrintErrorMessage() {
         Mockito.when(userDAO.getUsers()).thenReturn(nullInUsersList);
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printAllAdultUsername();
-        Assertions.assertEquals(errorMessage, output.toString());
+        Assertions.assertEquals(errorMessage, output.toString().trim());
     }
 
     @Test
     void printUniqueNames_correctWork_true() {
         usersPrinterUtil.printUniqueNames();
-        Assertions.assertEquals(uniqueNames, output.toString());
+        Assertions.assertEquals(uniqueNames, output.toString().trim().replace("\r\n", " "));
+    }
+
+    @Test
+    void printUniqueNames_emptyList_true() {
+        Mockito.when(userDAO.getUsers()).thenReturn(emptyList);
+        this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
+
+        usersPrinterUtil.printUniqueNames();
+        Assertions.assertEquals(noRegisteredUsersMessage, output.toString().trim());
     }
 
     @Test
@@ -144,7 +176,7 @@ class UsersPrinterUtilTest {
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printUniqueNames();
-        Assertions.assertEquals("Maria\r\n", output.toString());
+        Assertions.assertEquals("Maria", output.toString().trim());
     }
 
     @Test
@@ -153,7 +185,7 @@ class UsersPrinterUtilTest {
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printUniqueNames();
-        Assertions.assertEquals(errorMessage, output.toString());
+        Assertions.assertEquals(errorMessage, output.toString().trim());
     }
 
     @Test
@@ -162,13 +194,22 @@ class UsersPrinterUtilTest {
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printUniqueNames();
-        Assertions.assertEquals(errorMessage, output.toString());
+        Assertions.assertEquals(errorMessage, output.toString().trim());
     }
 
     @Test
     void printUniqueEmails_correctWork_true() {
         usersPrinterUtil.printUniqueEmails();
-        Assertions.assertEquals(uniqueEmail, output.toString());
+        Assertions.assertEquals(uniqueEmail, output.toString().trim().replace("\r\n", " "));
+    }
+
+    @Test
+    void printUniqueEmails_emptyList_true() {
+        Mockito.when(userDAO.getUsers()).thenReturn(emptyList);
+        this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
+
+        usersPrinterUtil.printUniqueEmails();
+        Assertions.assertEquals(noRegisteredUsersMessage, output.toString().trim());
     }
 
     @Test
@@ -186,7 +227,7 @@ class UsersPrinterUtilTest {
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printUniqueEmails();
-        Assertions.assertEquals(errorMessage, output.toString());
+        Assertions.assertEquals(errorMessage, output.toString().trim());
     }
 
     @Test
@@ -195,13 +236,22 @@ class UsersPrinterUtilTest {
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printUniqueEmails();
-        Assertions.assertEquals(errorMessage, output.toString());
+        Assertions.assertEquals(errorMessage, output.toString().trim());
     }
 
     @Test
     void printAgeSum_correctWork_true() {
         usersPrinterUtil.printAgeSum();
-        Assertions.assertEquals("145\r\n", output.toString());
+        Assertions.assertEquals("145", output.toString().trim());
+    }
+
+    @Test
+    void printAgeSum_emptyList_true() {
+        Mockito.when(userDAO.getUsers()).thenReturn(emptyList);
+        this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
+
+        usersPrinterUtil.printAgeSum();
+        Assertions.assertEquals(noRegisteredUsersMessage, output.toString().trim());
     }
 
     @Test
@@ -210,7 +260,7 @@ class UsersPrinterUtilTest {
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printAgeSum();
-        Assertions.assertEquals("23\r\n", output.toString());
+        Assertions.assertEquals("23", output.toString().trim());
     }
 
     @Test
@@ -219,7 +269,7 @@ class UsersPrinterUtilTest {
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printAgeSum();
-        Assertions.assertEquals(errorMessage, output.toString());
+        Assertions.assertEquals(errorMessage, output.toString().trim());
     }
 
     @Test
@@ -228,13 +278,22 @@ class UsersPrinterUtilTest {
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printAgeSum();
-        Assertions.assertEquals(errorMessage, output.toString());
+        Assertions.assertEquals(errorMessage, output.toString().trim());
     }
 
     @Test
     void printUniqueUsernameLine_correctWork_true() {
         usersPrinterUtil.printUniqueUsernameLine();
-        Assertions.assertEquals(uniqueUsernameLine, output.toString());
+        Assertions.assertEquals(uniqueUsernameLine, output.toString().trim());
+    }
+
+    @Test
+    void printUniqueUsernameLine_emptyList_true() {
+        Mockito.when(userDAO.getUsers()).thenReturn(emptyList);
+        this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
+
+        usersPrinterUtil.printAgeSum();
+        Assertions.assertEquals(noRegisteredUsersMessage, output.toString().trim());
     }
 
     @Test
@@ -243,7 +302,7 @@ class UsersPrinterUtilTest {
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printUniqueUsernameLine();
-        Assertions.assertEquals("Maria\r\n", output.toString());
+        Assertions.assertEquals("Maria", output.toString().trim());
     }
 
     @Test
@@ -252,7 +311,7 @@ class UsersPrinterUtilTest {
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printUniqueUsernameLine();
-        Assertions.assertEquals(errorMessage, output.toString());
+        Assertions.assertEquals(errorMessage, output.toString().trim());
     }
 
     @Test
@@ -261,6 +320,7 @@ class UsersPrinterUtilTest {
         this.usersPrinterUtil = new UsersPrinterUtil(userDAO);
 
         usersPrinterUtil.printUniqueUsernameLine();
-        Assertions.assertEquals(errorMessage, output.toString());
+        Assertions.assertEquals(errorMessage, output.toString().trim());
     }
+
 }
