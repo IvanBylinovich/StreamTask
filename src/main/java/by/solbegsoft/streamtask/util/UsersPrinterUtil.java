@@ -19,6 +19,8 @@ public class UsersPrinterUtil {
     public void printAllName() {
         if (userList == null || userList.stream().anyMatch(Objects::isNull)) {
             System.out.println("error message");
+        } else if (userList.isEmpty()) {
+            System.out.println("There are no registered users in the system");
         } else {
             userList.stream().map(User::getName).filter(Objects::nonNull).forEach(System.out::println);
         }
@@ -27,14 +29,18 @@ public class UsersPrinterUtil {
     public void printAllAdultUsername() {
         if (userList == null || userList.stream().anyMatch(Objects::isNull)) {
             System.out.println("error message");
+        } else if (userList.isEmpty()) {
+            System.out.println("There are no registered users in the system");
         } else {
-            userList.stream().filter(u -> u.getName() != null).filter(u -> u.getAge() > 17).forEach(u -> System.out.println(u.getName()));
+            userList.stream().filter(u -> u.getName() != null && u.getAge() > 17).forEach(u -> System.out.println(u.getName()));
         }
     }
 
     public void printUniqueNames() {
         if (userList == null || userList.stream().anyMatch(Objects::isNull)) {
             System.out.println("error message");
+        } else if (userList.isEmpty()) {
+            System.out.println("There are no registered users in the system");
         } else {
             userList.stream().map(User::getName).filter(Objects::nonNull).distinct().forEach(System.out::println);
         }
@@ -43,34 +49,35 @@ public class UsersPrinterUtil {
     public void printUniqueEmails() {
         if (userList == null || userList.stream().anyMatch(Objects::isNull)) {
             System.out.println("error message");
+        } else if (userList.isEmpty()) {
+            System.out.println("There are no registered users in the system");
         } else {
-            userList.stream().map(User::getEmails).filter(Objects::nonNull).flatMap(Collection::stream).toList().stream().distinct().forEach(System.out::println);
+            userList.stream()
+                    .map(User::getEmails).filter(Objects::nonNull)
+                    .flatMap(Collection::stream).toList()
+                    .stream().distinct().forEach(System.out::println);
         }
     }
 
     public void printAgeSum() {
         if (userList == null || userList.stream().anyMatch(Objects::isNull)) {
             System.out.println("error message");
+        } else if (userList.isEmpty()) {
+            System.out.println("There are no registered users in the system");
         } else {
             Optional<Integer> ageSum = userList.stream().map(User::getAge).filter(Objects::nonNull).reduce(Integer::sum);
-            if (ageSum.isPresent()) {
-                System.out.println(ageSum.get());
-            } else {
-                System.out.println(0);
-            }
+            ageSum.ifPresentOrElse(System.out::println, () -> System.out.println(0));
         }
     }
 
     public void printUniqueUsernameLine() {
         if (userList == null || userList.stream().anyMatch(Objects::isNull)) {
             System.out.println("error message");
+        } else if (userList.isEmpty()) {
+            System.out.println("There are no registered users in the system");
         } else {
             Optional<String> lineU = userList.stream().map(User::getName).filter(Objects::nonNull).distinct().reduce((x, y) -> x.concat(", " + y));
-            if (lineU.isPresent()) {
-                System.out.println(lineU.get());
-            } else{
-                System.out.println("There are no registered users in the system");
-            }
+            lineU.ifPresentOrElse(System.out::println, () -> System.out.println("There are no registered users in the system"));
         }
     }
 
