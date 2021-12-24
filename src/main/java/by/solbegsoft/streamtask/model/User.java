@@ -1,4 +1,4 @@
-package by.solbegsoft.streamtask.entity;
+package by.solbegsoft.streamtask.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
