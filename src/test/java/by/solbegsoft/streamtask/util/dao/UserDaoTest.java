@@ -331,56 +331,56 @@ class UserDaoTest {
 
     @Test
     void printAgeSum_correctWork_true() {
-        userDAO.printAgeSum();
+        userDAO.printTotalUserAge();
         Assertions.assertEquals("140", output.toString().trim());
     }
 
     @Test
     void printAgeSum_emptyList_true() {
         userDAO.setUserList(emptyUserList);
-        userDAO.printAgeSum();
+        userDAO.printTotalUserAge();
         Assertions.assertEquals(blankMessage, output.toString().trim());
     }
 
     @Test
     void printAgeSum_blankedUsersInList_shouldPrintAgeSumNonNullUsers() {
         userDAO.setUserList(blankUserInList);
-        userDAO.printAgeSum();
+        userDAO.printTotalUserAge();
         Assertions.assertEquals("23", output.toString().trim());
     }
 
     @Test
     void printAgeSum_usersListIsNull_shouldPrintMessage() {
         userDAO.setUserList(null);
-        userDAO.printAgeSum();
+        userDAO.printTotalUserAge();
         Assertions.assertEquals("0", output.toString().trim());
     }
 
     @Test
     void printAgeSum_nullInUsersList_shouldPrintSumAgeNotNullUser() {
         userDAO.setUserList(nullInUsersList);
-        userDAO.printAgeSum();
+        userDAO.printTotalUserAge();
         Assertions.assertEquals("23", output.toString().trim());
     }
 
     @Test
     void printAgeSum_usersHaveFieldAgeZero_shouldPrintSumAgeNotNullUser() {
         userDAO.setUserList(usersHaveFieldAgeZero);
-        userDAO.printAgeSum();
+        userDAO.printTotalUserAge();
         Assertions.assertEquals("0", output.toString().trim());
     }
 
     @Test
     void printAgeSum_usersHaveFieldAgeNegativeNumber_shouldPrintSumAgeNotNullUser() {
         userDAO.setUserList(usersHaveFieldAgeNegativeNumber);
-        userDAO.printAgeSum();
+        userDAO.printTotalUserAge();
         Assertions.assertEquals("45", output.toString().trim());
     }
 
     @Test
     void printAgeSum_usersHaveFieldAgeNull_shouldPrintNotNullAgeSum() {
         userDAO.setUserList(usersHaveFieldAgeNull);
-        userDAO.printAgeSum();
+        userDAO.printTotalUserAge();
         Assertions.assertEquals("55", output.toString().trim());
     }
 
