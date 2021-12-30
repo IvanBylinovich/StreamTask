@@ -36,11 +36,12 @@ class UserDaoTest {
 
     String allName = "IvanJohnMariaKatePhilKateJohn";
     String adultUsers = "JohnMariaKateKateJohn";
-    String uniqueNames = "Ivan John Maria Kate Phil";
+    String uniqueNames = "IvanJohnMariaKatePhil";
     String uniqueEmail = "idontliketorepeattwice@mail.rumsin@fds.comlemon@john.comj@weak.iodb@maria.ru" +
             "xray@gmail.comhh@tut.rupasswordisthesameaslogin@gmail.comreallycomplexmail222@hh.ru" +
             "reallycomplexmail333@hh.rureallycomplexmail444@hh.ru";
     String uniqueUsernameLine = "IvanJohnMariaKatePhil";
+    String uniqueUsernameLine2 = "Ivan, John, Maria, Kate, Phil";
     String noRegisteredUsersMessage = "";
 
     @BeforeEach
@@ -226,7 +227,7 @@ class UserDaoTest {
     @Test
     void printUniqueUsernameLine_correctWork_true() {
         userDAO.printUniqueUsernameLine();
-        Assertions.assertEquals(uniqueUsernameLine, output.toString().trim());
+        Assertions.assertEquals(uniqueUsernameLine2, output.toString().trim());
     }
 
     @Test
@@ -254,7 +255,7 @@ class UserDaoTest {
     void printUniqueUsernameLine_nullInUsersList_shouldPrintEmptyMessage() {
         userDAO.setUserList(nullInUsersList);
         userDAO.printUniqueUsernameLine();
-        Assertions.assertEquals("", output.toString().trim());
+        Assertions.assertEquals("Maria", output.toString().trim());
     }
 
 }
