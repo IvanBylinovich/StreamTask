@@ -2,12 +2,14 @@ package by.solbegsoft.streamtask.dao;
 
 import by.solbegsoft.streamtask.model.User;
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Data
 public class UserDAO {
@@ -27,73 +29,64 @@ public class UserDAO {
     }
 
     public void printUserNames() {
-        Optional.ofNullable(userList).ifPresentOrElse(v -> v.stream()
-                        .filter(Objects::nonNull)
-                        .map(User::getName)
-                        .filter(Objects::nonNull)
-                        .forEach(System.out::println)
-                , () -> System.out.println("")
-        );
+        Optional.ofNullable(userList).stream()
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .map(User::getName)
+                .filter(StringUtils::isNotBlank)
+                .forEach(System.out::println);
     }
 
     public void printUserNamesWhereAgeMoreThanNumber(int age) {
-        Optional.ofNullable(userList).ifPresentOrElse(v -> v.stream()
-                        .filter(Objects::nonNull)
-                        .filter(u -> u.getName() != null && u.getAge() >= age)
-                        .forEach(u -> System.out.println(u.getName()))
-                , () -> System.out.println("")
-        );
+        Optional.ofNullable(userList).stream()
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .filter(u -> StringUtils.isNotBlank(u.getName()) && u.getAge() >= age)
+                .forEach(u -> System.out.println(u.getName()));
     }
 
-    public void printUserNamesIfUnique() {
-        Optional.ofNullable(userList).ifPresentOrElse(v -> v.stream()
-                        .filter(Objects::nonNull)
-                        .map(User::getName)
-                        .filter(Objects::nonNull)
-                        .distinct()
-                        .forEach(System.out::println)
-                , () -> System.out.println("")
-        );
-
+    public void printUniqueUserNames() {
+        Optional.ofNullable(userList).stream()
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .map(User::getName)
+                .filter(StringUtils::isNotBlank)
+                .distinct()
+                .forEach(System.out::println);
     }
 
-    public void printUserEmailsIfUnique() {
-        Optional.ofNullable(userList).ifPresentOrElse(v -> v.stream()
-                        .filter(Objects::nonNull)
-                        .map(User::getEmails)
-                        .filter(Objects::nonNull)
-                        .flatMap(Collection::stream)
-                        .toList()
-                        .stream()
-                        .distinct()
-                        .forEach(System.out::println)
-                , () -> System.out.println("")
-        );
-
+    public void printUniqueUserEmails() {
+        Optional.ofNullable(userList).stream()
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .map(User::getEmails)
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+                .filter(StringUtils::isNotBlank)
+                .distinct()
+                .forEach(System.out::println);
     }
 
-    public void printAgeSum() {
+    public void printTotalUserAge() {
         Optional.ofNullable(userList).ifPresentOrElse(v -> v.stream()
                         .filter(Objects::nonNull)
                         .map(User::getAge)
-                        .filter(Objects::nonNull)
+                        .filter(x -> x != null && x >= 0)
                         .reduce(Integer::sum)
                         .ifPresent(System.out::println)
                 , () -> System.out.println(0)
         );
-
     }
 
     public void printUniqueUsernameLine() {
-        Optional.ofNullable(userList).ifPresentOrElse(v -> v.stream()
-                        .filter(Objects::nonNull)
-                        .map(User::getName)
-                        .filter(Objects::nonNull)
-                .distinct().reduce((x, y) -> x.concat(", " + y))
-                        //.collect(Collectors.joining())
-                , () -> System.out.println("")
-        );
-
+        System.out.println(Optional.ofNullable(userList).stream()
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .filter(Objects::nonNull)
+                .map(User::getName)
+                .filter(StringUtils::isNotBlank)
+                .distinct()
+                .collect(Collectors.joining(", ")));
     }
 }
 
