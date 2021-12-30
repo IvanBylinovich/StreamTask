@@ -68,20 +68,18 @@ public class UserDAO {
     }
 
     public void printTotalUserAge() {
-        Optional.ofNullable(userList).ifPresentOrElse(v -> v.stream()
-                        .filter(Objects::nonNull)
-                        .map(User::getAge)
-                        .filter(x -> x != null && x >= 0)
-                        .reduce(Integer::sum)
-                        .ifPresent(System.out::println)
-                , () -> System.out.println(0)
-        );
+        Optional.ofNullable(userList).stream()
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .map(User::getAge)
+                .filter(Objects::nonNull)
+                .reduce(Integer::sum)
+                .ifPresentOrElse(System.out::println, () -> System.out.println(0));
     }
 
     public void printUniqueUsernameLine() {
         System.out.println(Optional.ofNullable(userList).stream()
                 .flatMap(Collection::stream)
-                .filter(Objects::nonNull)
                 .filter(Objects::nonNull)
                 .map(User::getName)
                 .filter(StringUtils::isNotBlank)

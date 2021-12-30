@@ -200,7 +200,7 @@ class UserDaoTest {
     void printAgeSum_emptyList_true() {
         userDAO.setUserList(emptyList);
         userDAO.printTotalUserAge();
-        Assertions.assertEquals(noRegisteredUsersMessage, output.toString().trim());
+        Assertions.assertEquals("0", output.toString().trim());
     }
 
     @Test
@@ -234,7 +234,7 @@ class UserDaoTest {
     void printUniqueUsernameLine_emptyList_true() {
         userDAO.setUserList(emptyList);
         userDAO.printTotalUserAge();
-        Assertions.assertEquals(noRegisteredUsersMessage, output.toString().trim());
+        Assertions.assertEquals("0", output.toString().trim());
     }
 
     @Test
